@@ -9,10 +9,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.develope.notes.ui.screens.settings.SettingsViewModel
 
 private val lightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -81,18 +85,19 @@ private val darkColorScheme = darkColorScheme(
 
 @Composable
 fun NotesTheme(
-    darkTheme: Boolean = false,
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val themeState by settingsViewModel.isDarkModeEnabled.collectAsState()
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (themeState.isDarkModeEnabled) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> darkColorScheme
+        themeState.isDarkModeEnabled -> darkColorScheme
         else -> lightColorScheme
     }
     val view = LocalView.current
@@ -100,7 +105,7 @@ fun NotesTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = themeState.isDarkModeEnabled
         }
     }
 

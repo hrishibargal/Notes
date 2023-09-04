@@ -25,32 +25,32 @@ class AddEditScreenViewModel @Inject constructor(
                 if (it != null) {
                     _note.value = it
                 } else {
-                    _note.value = Note(id = 0, "","", Date())
+                    _note.value = Note(title =  "", note = "", dateTime = Date())
                 }
             }
         }
     }
 
     fun updateTitle(title: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _note.value = _note.value.copy(title = title)
         }
     }
 
     fun updateNote(note: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _note.value = _note.value.copy(note = note)
         }
     }
 
     fun addNote(note: Note) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.addNote(note)
         }
     }
 
     fun updateNoteModel(note: Note) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.updateNote(note)
         }
     }

@@ -27,18 +27,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.develope.notes.R
+import com.develope.notes.dto.Note
+import com.develope.notes.ui.theme.NotesTheme
+import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenEntry(
     navigateToEditScreen: (noteId: Int) -> Unit
 ) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val allNotes by viewModel.notes.collectAsState(initial = listOf())
     var searchQuery by remember { mutableStateOf("") }
 
+    HomeScreen(
+        allNotes = allNotes,
+        searchQuery = searchQuery,
+        navigateToEditScreen = navigateToEditScreen,
+        onSearchQuery = {
+            searchQuery = it
+        }
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    allNotes: List<Note>,
+    searchQuery: String,
+    navigateToEditScreen: (noteId: Int) -> Unit,
+    onSearchQuery: (String)-> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,7 +80,7 @@ fun HomeScreen(
                     .padding(10.dp),
                     query = searchQuery,
                     onQueryChange = {
-                        searchQuery = it
+                       onSearchQuery(it)
                     },
                     onSearch = {},
                     active = false,
@@ -78,7 +98,7 @@ fun HomeScreen(
 
                 LazyColumn {
                     items(allNotes.filter { item ->
-                        item.title.contains(searchQuery)
+                        item.title.contains(searchQuery, ignoreCase = true)
                     }) { note ->
                         NoteItem(note, navigateToEditScreen)
                     }
@@ -86,5 +106,18 @@ fun HomeScreen(
 
             }
         }
+    }
+}
+
+@Preview(showBackground = true, )
+@Composable
+fun PreviewHomeScreen() {
+    NotesTheme {
+        HomeScreen(
+            allNotes = listOf(Note(0, "Hi", "hello", Date())),
+            searchQuery = "",
+            navigateToEditScreen = {},
+            onSearchQuery = {}
+        )
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -26,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.develope.notes.dto.Note
 import com.develope.notes.utils.DATE_TIME_FORMAT
@@ -94,7 +97,7 @@ fun AddEditNote(
             Column(modifier = Modifier.fillMaxSize()) {
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = noteModel.title.orEmpty(),
+                    value = noteModel.title,
                     onValueChange = { newTitle ->
                         viewModel.updateTitle(newTitle)
                         characterCount = newTitle.length + noteModel.note.length
@@ -108,7 +111,11 @@ fun AddEditNote(
                     ),
                     placeholder = {
                         Text(text = "Title")
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Next
+                    )
                 )
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -139,7 +146,11 @@ fun AddEditNote(
                     ),
                     placeholder = {
                         Text(text = "Description..")
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Next
+                    )
                 )
             }
         }

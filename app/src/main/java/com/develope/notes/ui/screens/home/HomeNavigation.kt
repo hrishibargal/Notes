@@ -18,7 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.develope.notes.ui.navigation.NoteAppScreens
-import com.develope.notes.ui.screens.Settings
+import com.develope.notes.ui.screens.settings.SettingsScreen
 import com.develope.notes.ui.screens.addEditScreens.AddEditNote
 
 @Composable
@@ -68,12 +68,12 @@ fun HomeNavigation() {
             modifier = Modifier.padding(it)
         ) {
             composable(NoteAppScreens.Home.route) {
-                HomeScreen { noteId ->
+                HomeScreenEntry { noteId ->
                     navController.navigate("${NoteAppScreens.AddEditScreen.route}/${noteId}")
                 }
             }
             composable(NoteAppScreens.Settings.route) {
-                Settings()
+                SettingsScreen()
             }
             composable(
                 route = "${NoteAppScreens.AddEditScreen.route}/{noteId}",
